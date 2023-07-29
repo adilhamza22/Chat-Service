@@ -1,0 +1,148 @@
+body{
+    /* background-image: linear-gradient(90deg,rgb(7, 7, 138),white,white,white,white  )!important; */
+    background-image: url("./images/micah-boswell-OPnBJ5L2oxs-unsplash.jpg");
+    background-repeat: repeat-y;
+    background-size: calc(20%);
+    /* opacity: 0.5;     */
+    position: relative;
+}
+.main-container{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif   !important; 
+    display: flex;
+    background-color: white;
+    position: absolute;
+    width: 80%;
+    left: 12%;
+    /* top:40px; */
+    /* margin-top: 7%; */
+    margin: 15px 0%!important;
+    height: 95vh!important;
+    /* margin: 80px 0%;
+    height: 80vh; */
+    border-radius: 20px;
+    box-shadow: 3px 3px 3px 3px gray;
+}
+form h2{
+    color: #30558b;
+}
+/* .left-blue{
+    /* width: 25%!important; */
+    /* background-color: rgb(53, 53, 212); */
+    /* border-radius: 10%!important; }*/
+
+
+ 
+.left-blue img{
+    width: 100%!important;
+    height: 100%;
+    opacity: 0.9;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    /* border-radius: 4    px; */
+
+}
+.right-white{
+    /* width: 75%!important;    */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form-btn{
+    background-color: #30558b !important;
+    border: #30558b;
+}
+.icon-text{
+    display: flex;
+    justify-content: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: medium;
+    font-style: italic;
+    color: #30558b;
+}
+/* .icon-text:hover{ */
+    /* cursor: pointer; */
+/* } */
+.icons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.icons svg{
+    width: 20px;
+    height: 20px; 
+}
+.icons svg:hover{
+    cursor: pointer;
+}
+.icons a:first-child svg{
+    color: blue;
+}
+
+.icons a:nth-child(2) svg{
+    color: orangered;
+}
+.icons a:last-child svg{
+    color: darkblue;
+}
+@media only screen and (max-width: 992px) {
+    .left-blue{
+        display: none!important;
+    }
+    body{
+        background-image: url("./images/micah-boswell-OPnBJ5L2oxs-unsplash.jpg");
+        /* background-size: cover; */
+        background-size: calc(30%); 
+        /* background-repeat: ; */
+    }
+    .main-container{
+        width: 60%;
+        left: 20%;
+        top: 50px;
+        /* margin-top: 7%; */
+        margin: 30px 0%!important;
+        height: 80vh!important;
+    }
+    form h2.h3{
+        font-size: large!important;
+    }
+    form div,button{
+        font-size: smaller!important;
+    }
+    form button{
+        width: 100%;
+        margin-top: 3px;
+    }
+}
+
+@media only screen and (height: 700px) and(max-width:376px) {
+   .main-container{
+    height: 85vh!important;
+    top:40px;
+    }
+
+    form button{
+        height: 30px;
+    }
+}
+@media only screen and (max-width:340px){
+    .main-container{
+        top:30px;
+        height: 85vh!important;
+    }
+    form button{
+        height: 30px;
+    }           
+}
+@media only screen and (max-width:425px){
+    .remember-me{
+        margin-bottom: 0!important;
+    }
+    form div{
+        margin-top: 0;
+        margin-bottom: 0;    
+    }
+    .main-container{
+        width: 70%;
+        left: 15%;
+    }
+}

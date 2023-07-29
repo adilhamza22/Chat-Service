@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>Chatbot Home</title>
+    <link rel="icon" href="./images/green.jpeg">
+    <!-- bootstrap icons cdn -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="home.css">
+    <script src="home.js"></script>
+</head>
+
+<body onload="getChats()">
+    <div class="main-container mw-100 mx-0 px-0 container row">
+        <!-- LEFT 3 COLS -->
+        <div class="container col-3 left-main-container mx-0 px-0">
+            <div class="container profile-bar">
+                <div class="avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-person" viewBox="0 0 16 16">
+                        <path
+                            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z" />
+                    </svg>
+                </div>
+                <div class="settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-chat" viewBox="0 0 16 16">
+                        <path
+                            d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                        <path
+                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="container row search-bar">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search Chats" aria-label="Username"
+                        aria-describedby="basic-addon1">
+                    <span class="input-group-text search-glass" id="basic-addon1"><i
+                            class="bi bi-search search-glass"></i></span>
+                </div>
+            </div>
+            <div class="list-group list-group-flush card chats-container" id="chats-id">
+
+                <!-- <div class="card" style="width: 18rem;"> -->
+                <!-- <div class=""> -->
+                <!-- <li class="list-group-item">An item</li>
+                      <li class="list-group-item">A second item</li>
+                      <li class="list-group-item">A third item</li> -->
+                <!-- </div> -->
+                <!-- </div>z -->
+            </div>
+
+        </div>
+
+        <!-- RIGHT 9 COLS  -->
+        <div class="container col-9 right-main-container px-0">
+            <div class="profile-bar-right d-flex px-0 mx-0">
+                <div class="avatar ms-2">
+
+                    <h5 id="chat-current-name"></h5>
+                    <div id="profile-last-seen"></div>
+
+                </div>
+                <div id="profile-name" class="profile-name d-flex justify-content-between">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                        <path
+                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                    </svg>
+                    <div id="curr-id-div">
+                    </div>
+                </div>
+            </div>
+            <div class="chats-box container">
+                <div class="alert alert-warning encryption-box" id="encryption-box" role="alert">
+                    <!-- Messages you send to this chat are now secured with end-to-end encryption.
+                    Don't tap for more! -->
+                </div>
+                <div class="row sender-msg-col w-25" id="sender-msg-col">
+                    <!-- <div class="card">
+                        <div class="card-body">
+                          Hey Whats up!
+                        </div>
+                      </div> -->
+
+                </div>
+                <div class="row own-msg-col w-25" id="own-msg-col">
+                    <!-- <div class="card">
+                        <div class="card-body">
+                          Hi!
+                        </div>
+                      </div> -->
+
+                </div>
+            </div>
+            <div class="container px-0 mx-0 input-send-msg" id="input-send-msg">
+                <div class="input-group">
+                    <input id="input-msg" type="text" class="form-control input-msg" placeholder="Send a new message"
+                        aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary send-btn" type="button" id="button-addon2">Send</button>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    <script>
+        var userDetails = [];
+        var myOwnId;
+        function getChats(event) {
+            // event.preventDefault();
+            myOwnId = authenticateUser();
+            console.log("My OWN ID:", myOwnId);
+            // console.log("OWN USER:",ownUser);
+            userDetails = JSON.parse(localStorage.getItem('userDetails'));
+            var firstName = "", lastName = "", id;
+            console.log("OBJECT:" + firstName, lastName, userDetails);
+            if (userDetails) {
+                let getListId = document.getElementById('chats-id');
+                //    console.log(getListId);
+                let currIdDiv = document.getElementById('curr-id-div');
+
+                let content = document.createElement('div');
+                content.innerHTML = "";
+
+
+                // debugger
+                for (let i = 0; i < userDetails.length; i++) {
+                    const y = userDetails[i];
+
+                    if (y.id != myOwnId) {
+
+                        // firstName = userDetails.fName;
+                        // lastName = userDetails.lName;
+                        content.innerHTML +=
+                            `<div class="chat-name" id="chat-name" onclick=saveCurrClickId(${i})>
+                            
+                            <div id="chat-avatar" class="avatar chat-avatar d-flex justify-content-start ">
+                                
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-badge" viewBox="0 0 16 16">
+                                    <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                    <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492V2.5z"/>
+                                </svg>
+                                <div id ="chat-person" style="margin-left: 5px;">${y.fName} ${y.lName}</div> 
+
+                            </div>
+                            <div id="last-seen">${y.timestamp || ""}</div>
+
+                        </div>`;
+                        // debugger
+                        getListId.appendChild(content);
+                        // console.log(firstName + " "+ lastName);
+                    }
+                }
+
+                var chatList = document.querySelectorAll(".chat-name");
+                chatList.forEach((chatList, index) => {
+                    // var _avatar = chatList.querySelectorAll(".chat-avatar > .chat-person");
+
+                    chatList.addEventListener("click", () => {
+
+                        var name = chatList.innerText.split("\n");
+
+                        console.log("NAME:" + name[0]);
+                        var lastSeen = name[1] || "";
+                        console.log("Last Seen:" + lastSeen + " " + typeof lastSeen);
+
+                        var currName = name[0].split(" ");
+                        var currFname = currName[0];
+                        var currLname = currName[1];
+                        // var clickedUser = { fName: currFname, lName: currLname, lastSeen: lastSeen };
+                        // console.log(clickedUser);
+
+                        document.getElementById("chat-current-name").innerHTML = name[0];
+
+                        // if(lastSeen!="") lastSeen = "Last Seen at: " + lastSeen;    
+
+                        document.getElementById("profile-last-seen").innerHTML = "Last Seen at:" + lastSeen;
+
+                        // check if history is empty 
+                        // let clickedId = clickedUser.id;
+
+
+                        // get all history of a chat on click
+
+                        // inputMsg.addEventListener("input", () => {console.log("INPUT MSG inpuuted",inputMsg.innerHTML);});
+
+
+
+                    })
+                })
+
+            }
+        }
+
+        var currClickId;
+        var clickedUser = {};
+        let encryptionAlert = document.getElementById("encryption-box");
+        let encryptionAlertContent;
+        encryptionAlertContent = "";
+
+
+
+        const retrieveChatHistory = (currid) => {
+            // if auth user does not contain chat history
+            var _authUser = JSON.parse(localStorage.getItem("authUser"));
+            if (!_authUser.chatHistory) {
+                console.log("No chat history found");
+                encryptionAlertContent += `Messages you send to this chat are now secured with end-to-end encryption.Don't tap for more!`;
+                encryptionAlert.innerHTML = `Messages you send to this chat are now secured with end-to-end encryption.
+                        Don't tap for more!`;
+                return -1;
+            }
+            _authUser.chatHistory.forEach((item, index) => {
+                // debugger
+                // if(item.id !== currid){
+                //     encryptionAlertContent += `Messages you send to this chat are now secured with end-to-end encryption.Don't tap for more!`;
+                //     encryptionAlert.innerHTML = `Messages you send to this chat are now secured with end-to-end encryption.
+                //         Don't tap for more!`;   
+                // }        
+                if (item.id == currid) {
+                    console.log("CURRENT CLICK chat history IN AUTH USER FOUND", item.id, currClickId);
+                    item.messages.forEach((item2, index2) => {
+                        console.log("msgs:", item2);
+                        // displayChatHistory(item2);
+                        // render chat history dynamically
+                        // let sendMsginput = document.getElementById("input-send-msg");
+                        // console.log("sendMsginput", sendMsginput);
+                        // let inputMsg =sendMsginput.querySelector(".input-msg");
+                        // console.log("inputMsg", inputMsg);
+                        encryptionAlertContent = "";
+                        encryptionAlert.innerHTML = encryptionAlertContent;
+                    });
+
+                }
+            });
+            return 0;
+        };
+        var historyFound;
+        function saveCurrClickId(index) {
+
+            //clear the alert message 
+            encryptionAlertContent += ``;
+            encryptionAlert.innerHTML = `Messages you send to this chat are now secured with end-to-end encryption.
+                        Don't tap for more!`;
+            currClickId = index;
+            console.log(userDetails[currClickId].fName, userDetails[currClickId].id, "myIndex");
+            console.log("_CurrClickId", currClickId);
+            historyFound = retrieveChatHistory(currClickId);
+            // if return from retrieve = -1 then create chathistory and save msg in it
+            // displayChatHistory();
+
+            let chat_history = userDetails[currClickId].chatHistory;
+            if(chat_history==undefined){
+                alert("No Chat history yet");
+                return;
+            }  
+            console.log("chathistry", chat_history);
+            let msgItem = chat_history[0].messages;
+            let displayOwnMsg =document.getElementById("own-msg-col");
+            let displaySenderMsg =document.getElementById("sender-msg-col");
+            
+            console.log(msgItem+" messages");
+
+            for (let i=0; i<msgItem.length; i++){
+                if (msgItem[i].sid == myOwnId) {
+                    //render in myowncol
+                    // let chatContent = document.createElement('div');
+                    let chatContent="";
+                    // chatContent.innerHTML = "";
+                    chatContent += `<div class="card">
+                                        <div class="card-body">
+                                            ${msgItem[i].text}
+                                        </div>
+                                    </div>`;
+                    console.log("chatContent own:", chatContent);
+                    // displayOwnMsg.appendChild(chatContent);
+                    displayOwnMsg.insertAdjacentHTML('beforeend',chatContent);
+
+                }
+                if (msgItem[i].sid == currClickId) {
+                    //render in sendercol
+
+                    // let chatContent = document.createElement('div');
+                    let chatContent="";
+                    // chatContent.innerHTML = "";
+
+                    chatContent += `<div class="card">
+                                        <div class="card-body">  
+                                            ${msgItem[i].text}
+                                        </div>
+                                    </div>`;
+                    console.log("chatContent sender:", chatContent);
+                    // displaySenderMsg.appendChild(chatContent);
+                    displaySenderMsg.insertAdjacentHTML('beforeend',chatContent);
+
+
+                }
+
+            }
+
+            // otherwise save msg in chat history
+
+        }
+        console.log("historyFound", historyFound);
+
+
+        let sendBtn = document.querySelector(".send-btn");
+
+        sendBtn.addEventListener("click", () => {
+            // sendMsg(historyFound);
+            console.log("sendbtn clicked");
+            let msgTyped = document.querySelector(".input-send-msg input").value;
+            console.log("MSG TYPED" + msgTyped);
+            console.log("history found:", historyFound);
+            if (historyFound == -1) {
+                //create chat history in userdetails of sender and own id as well as auth user
+                let user_Details = JSON.parse(localStorage.getItem("userDetails"));
+                let auth_User = JSON.parse(localStorage.getItem("authUser"));
+                auth_User.chatHistory = [{ id: currClickId, messages: [{ sid: myOwnId, text: msgTyped }] }];
+                localStorage.setItem("authUser", JSON.stringify(auth_User));
+                user_Details.forEach((item, index) => {
+                    //save in click users details
+
+                    if (item.id == currClickId) {
+
+                        item.chatHistory = [{ id: myOwnId, messages: [{ sid: myOwnId, text: msgTyped }] }];
+                        localStorage.setItem("userDetails", JSON.stringify(user_Details));
+
+                    }
+                    //save in own users details
+                    // if(item.id==myOwnId){
+                    //     item.chatHistory= [{id:currClickId,messages:[{sid:myOwnId,text:msgTyped}]}];
+                    //     localStorage.setItem("userDetails",JSON.stringify(user_Details));
+                    // }
+
+                });
+
+            }
+            console.log("history found:", historyFound);
+
+            if (historyFound == 0) {
+                let user_Details = JSON.parse(localStorage.getItem("userDetails"));
+                let auth_User = JSON.parse(localStorage.getItem("authUser"));
+                auth_User.chatHistory.forEach((item, index) => {
+                    if (item.id == currClickId) {
+                        let msg = { sid: myOwnId, text: msgTyped };
+                        item.messages.push(msg);
+                    }
+                    localStorage.setItem("authUser", JSON.stringify(auth_User));
+
+                });
+
+
+                user_Details.forEach((item, index) => {
+                    //save in click users details
+                    if (item.id == currClickId) {
+                        item.chatHistory.forEach((item2, index2) => {
+                            if (item2.id == myOwnId) {
+                                let msg = { sid: myOwnId, text: msgTyped };
+                                item2.messages.push(msg);
+                                console.log(item2);
+                            }
+
+                        });
+                    }
+                    localStorage.setItem("userDetails", JSON.stringify(user_Details));
+
+                    //save in own users details
+                    // // if(item.id == myOwnId){
+                    // //     if(item.chatHistory){
+                    // //         item.chatHistory.forEach((item2,index2)=>{
+                    // //             if(item2.id == currClickId){
+                    // //                 let msg = {sid:myOwnId,text:msgTyped};
+                    // //                 item2.messages.push(msg);
+                    // //                 localStorage.setItem("userDetails",JSON.stringify(user_Details));
+                    // //                 console.log(item2);
+                    // //             }
+                    // //         });
+                    // //     }
+                    //     if(!item.chatHistory){
+                    //         let msg = {sid:myOwnId,text:msgTyped};
+                    //         item.chatHistory.messages =[];
+                    //         item.chatHistory.messages.push(msg);
+                    //         localStorage.setItem("userDetails",JSON.stringify(user_Details));
+                    //         console.log(item2);
+
+
+
+                    //     }    
+
+                    // }
+                });
+
+            }
+            debugger
+            //before exiting the click event save the clickd users current chats stored in auth user into the users details of user
+            let auth_User = JSON.parse(localStorage.getItem("authUser"));
+            console.log("authUser", auth_User);
+            let currChats;
+            currChats = auth_User.chatHistory[0].messages;
+            // auth_User.chatHistory.forEach((authItem) => {
+            //     console.log("currentClickID",currClickId);
+            //     console.log("authitem.id",authItem.id);
+            //     if(authItem.id == currClickId){
+            //         currChats = authItem.messages;
+            //     }
+            // })
+            console.log("currChats", currChats);
+            let uDetails = JSON.parse(localStorage.getItem("userDetails"));
+            let chatsFound = false;
+            uDetails.forEach((item, index) => {
+                if (item.id == currClickId) {
+                    item.chatHistory.forEach((item2, index2) => {
+                        if (item2.id == myOwnId) {
+                            item2.messages.push(currChats);
+                            chatsFound = true;
+                        }
+                    });
+                    if (chatsFound == false) {
+                        item.chatHistory.messages = { id: myOwnId, message: currChats };
+                    }
+                }
+
+            });
+            localStorage.setItem('userDetails', JSON.stringify(uDetails));
+
+        })
+
+        // let msg ;
+
+        // const sendMsg = (historyFound) =>{
+        //     let msgDiv = document.getElementById("input-msg");
+        //     var authUser = JSON.parse(localStorage.getItem("authUser"));
+
+        //     msgDiv.addEventListener('input', function () {
+        //         // msg = msgDiv.value;
+        //         msg = this.value;
+        //         console.log("msg:"+msg);
+
+        //     });
+        //     // console.log("msg:"+msg);
+        //     if(historyFound==undefined || -1){
+        //         userDetails.forEach((item,index)=>{
+        //             if(item.id == currClickId){
+        //                 // debugger 
+
+
+        //                 item.chatHistory=[];
+        //                 let userObj = {id: currClickId, messages: []};
+        //                 // item.chatHistory.id = currClickId;
+        //                 // item.chatHistory.messages = {sid:myOwnId,text:msg};
+        //                 item.chatHistory.push(userObj);
+        //                 item.chatHistory.forEach((item2,index2)=>{
+        //                     if(item2.id == currClickId){
+        //                         item2.messages ={sid:myOwnId,text:msg};                        
+        //                         localStorage.setItem('userDetails', JSON.stringify(userDetails));
+        //                         console.log("created item.chatHistory",item.chatHistory);
+        //                         authUser.chatHistory = [];
+
+
+        //                     }
+        //                 })
+
+        //             }
+        //         });
+        //         //also update in auth users chat history
+        //         authUser.chatHistory=[];
+        //         authUser.chatHistory.push({id: currClickId, messages: []});
+        //         authUser.chatHistory.messages=({sid:myOwnId,text:msg});
+        //     }
+        //     if(historyFound!=undefined){
+        //         userDetails.forEach((item,index)=>{
+        //             if(item.id == currClickId){
+        //                 //for userdetails conditon ^^^
+
+        //                 // item.chatHistory.id = currClickId;
+        //                 item.chatHistory.forEach((item2,index2)=>{
+        //                     if(item2.id == currClickId){
+        //                         //for messages conditon ^^^
+        //                         debugger
+        //                        item2.messages.push({sid:myOwnId,text:msg});
+        //                        localStorage.setItem('userDetails', JSON.stringify(userDetails));
+        //                         console.log("created item.chatHistory",item.chatHistory);
+
+        //                     }
+        //                 });
+        //             }
+        //         });
+        //         //also update in authUser chat history
+        //         authUser.chatHistory.forEach((item,index)=>{
+        //             if(item.id == currClickId){
+        //                 item.messages.push({sid:myOwnId,text:msg});
+        //             }
+        //         })
+
+        //     }   
+
+        //     // return msg;
+
+        // }
+
+        const clearInput = () => {
+            document.querySelector(".input-msg").innerText = "";
+        }
+
+        // let sendBtn = document.querySelector(".send-btn");
+        // sendBtn.addEventListener("click",()=>{
+        //     sendMsg(historyFound);
+        // })
+        // sendMsg(historyFound);// get msg from input field   
+        clearInput(); //clear send msg input field
+
+        const displayChatHistory = () => {
+            let _CurrClickId = currClickId;
+            let senderCol = document.getElementById("sender-msg-col");
+            let ownCol = document.getElementById("own-msg-col");
+            // let msgItems;
+            let userDet = JSON.parse(localStorage.getItem("userDetails"));
+            console.log(userDet, "userDet");
+
+            for (let i = 0; i < userDet.length; i++) {
+                if (userDet[i].id == _CurrClickId) {
+                    if (!userDet[i].chatHistory) console.log("userDet[i].chatHistory");
+                    for (let j = 0; j < userDet[i].chatHistory.length; j++) {
+                        msgItem = userDet[i].cha[j];
+
+                    }
+                }
+            }
+
+
+            console.log("senderCol=" + senderCol.innerHTML);
+            console.log("ownerCol=" + ownCol.innerHTML);
+
+
+
+            console.log("userdetails form dsiplayed" + userDetails);
+
+
+            //call this function from line 245 give it item2 as param
+
+
+        }
+
+
+
+
+
+
+
+        console.log("func", getNumber());
+    </script>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
+
+</html>
