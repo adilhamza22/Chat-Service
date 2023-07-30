@@ -118,14 +118,18 @@ const displayMessages = (_clickId, _myid) => {
         }
         chatUser.messages.forEach((msgItem, msgIndex) => {
             if (msgItem.sid == _clickId) {
+                
                 //render recpient chats
-
                 let chatContent = "";
                 let div = document.createElement('div');
                 div.setAttribute('id', "chat-screen");
-
+                let nowTime = new Date();
+                let _timeStamp;
+                if(msgItem.timestamp){
+                    _timeStamp =  msgItem.timestamp;
+                }
                 chatContent += `<div class="card">
-                                        <div class="card-body d-flex justify-content-between dropend">
+                                        <div class="card-body d-flex justify-content-between dropend sender-text-div">
                                             ${msgItem.text}
                                            <button type="button" class="bg-transparent msg-dots" data-bs-toggle="dropdown" aria-expanded="false" id="msg-dots" onclick=msgSettings() >
                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -134,11 +138,11 @@ const displayMessages = (_clickId, _myid) => {
                                                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
                                              </svg>
                                            </button>
+
                                            <ul class="dropdown-menu bg-light">
                                            <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Delete For Me</a><i class="bi bi-trash me-2 bin"></i></li>
                                          
                                        </ul>
-                                      
                                         </div>
                                     </div>`;
                 div.innerHTML = chatContent;
@@ -151,7 +155,12 @@ const displayMessages = (_clickId, _myid) => {
                 let chatContent = "";
                 let div = document.createElement('div');
                 div.setAttribute('id', "chat-screen");
-
+                let nowTime = new Date();
+                let _timeStamp;
+                if(msgItem.timestamp){
+                _timeStamp =  msgItem.timestamp;
+                }
+                
                 chatContent += `<div class="card">
                                         <div class="card-body d-flex justify-content-between dropstart msg-text-div" id ="msg-text-div">
                                             ${msgItem.text}
@@ -161,9 +170,10 @@ const displayMessages = (_clickId, _myid) => {
                                                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
                                        </svg>   
                                        </button>
+
                                         <ul class="dropdown-menu bg-light">
                                             <li class="d-flex align-items-baseline" id ="del-for-me"  onclick=delForMe()><a class="dropdown-item" href="#">Delete For Me</a> <i class="bi bi-trash me-2 bin"></i> </li>
-                                            <li class="d-flex align-items-baseline" id ="del-for-all"><a class="dropdown-item" href="#">Delete For Everyone</a><i class="bi bi-trash me-2 bin"></i></li>
+                                            <li class="d-flex align-items-baseline" id ="del-for-all" onclick=delForEveryone()><a class="dropdown-item" href="#">Delete For Everyone</a><i class="bi bi-trash me-2 bin"></i></li>
                                             <li class="d-flex align-items-baseline" id ="edit-msg"><a class="dropdown-item" href="#">Edit Message</a><i class="bi bi-pencil-square me-2 edit"></i></li>
                                         </ul>
                                        
@@ -239,23 +249,26 @@ console.log("historyFound", historyFound);
 
 const saveMsg = (sid, myid, msg) => {
     let newUserCheck = 0;
+    let date = new Date();
+    let timestamp = date.getHours() + ':' + date.getMinutes();
+
     debugger
     let senderHistoryCreated = false;
     if (!authUser.chatHistory || !userDetails[sid].chatHistory || !userDetails[myid].chatHistory) {
         if (!authUser.chatHistory) {
-            authUser.chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg }] }];
+            authUser.chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg, timestamp:timestamp }] }];
             localStorage.setItem('authUser', JSON.stringify(authUser));
             newUserCheck++;
         }
         if (!userDetails[sid].chatHistory) {
-            userDetails[sid].chatHistory = [{ id: myid, messages: [{ sid: myid, text: msg }] }];
+            userDetails[sid].chatHistory = [{ id: myid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] }];
             localStorage.setItem('userDetails', JSON.stringify(userDetails));
             newUserCheck++;
             senderHistoryCreated = true;
 
         }
         if (!userDetails[myid].chatHistory) {
-            userDetails[myid].chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg }] }];
+            userDetails[myid].chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] }];
             localStorage.setItem('userDetails', JSON.stringify(userDetails));
             newUserCheck++;
         }
@@ -270,7 +283,7 @@ const saveMsg = (sid, myid, msg) => {
         }
         if (!recipient) {
             //if chat history with another user then create a  new conversation in chathistory of auth user;
-            authUser.chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg }] });
+            authUser.chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] });
 
         }
         localStorage.setItem('authUser', JSON.stringify(authUser));
@@ -278,7 +291,7 @@ const saveMsg = (sid, myid, msg) => {
     if (userDetails[sid].chatHistory) {
         let recipient = userDetails[sid].chatHistory.find((convo) => {
             if (convo.id == myid && senderHistoryCreated != true) {
-                convo.messages.push({ sid: myid, text: msg });
+                convo.messages.push({ sid: myid, text: msg, timestamp:timestamp });
             }
         });
         localStorage.setItem('userDetails', JSON.stringify(userDetails));
@@ -290,7 +303,7 @@ const saveMsg = (sid, myid, msg) => {
         }
         //if chat history with another user then create a  new conversation in chathistory of own user in userDetails
         if (!recipient) {
-            userDetails[myid].chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg }] });
+            userDetails[myid].chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] });
         }
         localStorage.setItem('userDetails', JSON.stringify(userDetails));
     }
@@ -360,6 +373,67 @@ const delForMe = () => {
     });
 };
 
+const delForEveryone = ()=>{
+    debugger
+    let msgTextDiv = document.querySelectorAll(".msg-text-div");
+    msgTextDiv.forEach((item, index) => {
+        item.addEventListener("click", () => {
+            let msgText = item.firstChild.textContent.trim();
+            console.log(item.firstChild.textContent.trim());
+
+            console.log(msgText);
+            let _myid = myOwnId;
+            let _clickid = currClickId;
+            let sid = _myid;
+            let _userDetails = JSON.parse(localStorage.getItem("userDetails"));
+            let updatedDetails = _userDetails[_myid].chatHistory.forEach((item, index) => {
+                let updatedMessages;
+                if (item.id == _clickid) {
+                    item.messages.forEach((msgItem, msgIndex) => {
+                        let trimMsg = msgItem.text.trim();
+                        console.log(msgItem.sid == _myid);
+                        console.log(trimMsg == msgText);
+                        if (msgItem.sid == _myid && trimMsg == msgText) {
+                            console.log(item.messages);
+                            updatedMessages = item.messages.splice(msgIndex, 1);
+
+                        }
+                    })
+                    if (updatedMessages) {
+                        // item.messages=updatedMessages;
+                        console.log(updatedMessages);
+                    }
+                }
+            });
+            console.log(_userDetails);
+            localStorage.setItem('userDetails', JSON.stringify(_userDetails));
+            //remove from other persons history
+
+            _userDetails[_clickid].chatHistory.forEach((item,index)=>{
+                if(item.id == _myid){
+                    item.messages.forEach((msgItem,msgIndex)=>{
+                        let trimMsg = msgItem.text.trim();
+                        let currTime = new Date();
+                        currTime = currTime.getHours()+":"+currTime.getMinutes();
+                        console.log(msgItem.sid == _myid);
+                        console.log(trimMsg == msgText);
+                        // add timestamp check in if condition 
+                        if(msgItem.sid == _myid && trimMsg == msgText) {
+                            item.messages.splice(msgIndex, 1);
+                        }
+
+                    })
+                }
+            });
+
+            console.log(_userDetails);
+
+            // console.log(_userDetails);
+            localStorage.setItem('userDetails', JSON.stringify(_userDetails));
+        });
+    });
+       
+};
 
 
 
