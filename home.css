@@ -141,12 +141,13 @@ body{
 }
 .sender-msg-col{
     --bs-gutter-x: 0;
-
+    padding-left: 5px;
 }
 .own-msg-col{
     --bs-gutter-x: 0;
     position: absolute;
     right: 0;
+    padding-right: 5px;
 }
 .own-msg-col .card ,.sender-msg-col .card{
     border-radius: 15px;
@@ -166,5 +167,25 @@ body{
 }
 .input-send-msg{
     position: absolute;
-    bottom: 0;
+    width: 73%;
+    left: 25%;
+    bottom: 3%;
+}
+#msg-dots{
+    border: none;
+}
+.bin{
+    color: orangered;
+}
+.edit{
+    color:rgb(85, 85, 212);
+}
+.right-dots-btn{
+    border: none;
+}
+.log-out{
+    color:gray;
+}
+#chat-screen{
+    padding-bottom: 10px;
 }

@@ -119,13 +119,26 @@ const displayMessages = (_clickId, _myid) => {
         chatUser.messages.forEach((msgItem, msgIndex) => {
             if (msgItem.sid == _clickId) {
                 //render recpient chats
+
                 let chatContent = "";
                 let div = document.createElement('div');
                 div.setAttribute('id', "chat-screen");
 
                 chatContent += `<div class="card">
-                                        <div class="card-body">
+                                        <div class="card-body d-flex justify-content-between dropend">
                                             ${msgItem.text}
+                                           <button type="button" class="bg-transparent msg-dots" data-bs-toggle="dropdown" aria-expanded="false" id="msg-dots" onclick=msgSettings() >
+                                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                           class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                           <path
+                                               d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                             </svg>
+                                           </button>
+                                           <ul class="dropdown-menu bg-light">
+                                           <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Delete For Me</a><i class="bi bi-trash me-2 bin"></i></li>
+                                         
+                                       </ul>
+                                      
                                         </div>
                                     </div>`;
                 div.innerHTML =chatContent;
@@ -134,21 +147,48 @@ const displayMessages = (_clickId, _myid) => {
             }
             if (msgItem.sid == _myid) {
                 //render own chats
+
                 let chatContent = "";
                 let div = document.createElement('div');
                 div.setAttribute('id', "chat-screen");
 
                 chatContent += `<div class="card">
-                                        <div class="card-body">
+                                        <div class="card-body d-flex justify-content-between dropstart">
                                             ${msgItem.text}
+                                           <button  type="button" class=" bg-transparent msg-dots" id="msg-dots" data-bs-toggle="dropdown" onclick=msgSettings() aria-expanded="false"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                           class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                           <path
+                                               d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                       </svg>   
+                                       </button>
+                                        <ul class="dropdown-menu bg-light">
+                                            <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Delete For Me</a> <i class="bi bi-trash me-2 bin"></i> </li>
+                                            <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Delete For Everyone</a><i class="bi bi-trash me-2 bin"></i></li>
+                                            <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Edit Message</a><i class="bi bi-pencil-square me-2 edit"></i></li>
+                                        </ul>
+                                       
                                         </div>
-                                    </div>`;
-                div.innerHTML =chatContent;
+                                    </div>  `;
+                div.innerHTML = chatContent;
                 myCol.insertAdjacentElement('beforeend', div);
             }
         });
     }
 }
+
+function show_hide() {  
+    var click = document.getElementById("list-items");  
+    if(click.style.display ==="none") {  
+       click.style.display ="block";  
+    } else {  
+       click.style.display ="none";  
+    }   
+ }  
+
+const msgSettings = (text)=>{
+    console.log('msgSettingsg',);
+};
+
 
 const clearChatScreen = () => {
     let senderMsg = document.getElementById("sender-msg-col");
@@ -156,6 +196,7 @@ const clearChatScreen = () => {
     senderMsg.innerHTML = "";
     ownMsg.innerHTML = "";
 };
+
 
 
 
@@ -198,6 +239,7 @@ console.log("historyFound", historyFound);
 
 const saveMsg = (sid, myid, msg) => {
     let newUserCheck = 0;
+    debugger
     let senderHistoryCreated = false;
     if (!authUser.chatHistory || !userDetails[sid].chatHistory || !userDetails[myid].chatHistory) {
         if (!authUser.chatHistory) {
@@ -273,6 +315,14 @@ sendBtn.addEventListener("click", () => {
 
 });
 
+const logOut = ()=>{
+    let _clickId = currClickId;
+    let _myid = myOwnId;
+    let _authUser = JSON.parse(localStorage.getItem("authUser"));
+    _authUser={};
+    localStorage.setItem("authUser", JSON.stringify(_authUser));
+    window.location.href ="./login.html";
+};
 
 
 
@@ -302,3 +352,7 @@ sendBtn.addEventListener("click", () => {
 function getNumber() {
     return 2;
 }
+// let msgDots =  document.getElementById("msg-dots");
+// msgDots.addEventListener("click", ()=>{
+//     console.log("msg-dots clicked");
+// });
