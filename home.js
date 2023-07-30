@@ -141,7 +141,7 @@ const displayMessages = (_clickId, _myid) => {
                                       
                                         </div>
                                     </div>`;
-                div.innerHTML =chatContent;
+                div.innerHTML = chatContent;
                 recipientCol.insertAdjacentElement('beforeend', div);
 
             }
@@ -153,7 +153,7 @@ const displayMessages = (_clickId, _myid) => {
                 div.setAttribute('id', "chat-screen");
 
                 chatContent += `<div class="card">
-                                        <div class="card-body d-flex justify-content-between dropstart">
+                                        <div class="card-body d-flex justify-content-between dropstart msg-text-div" id ="msg-text-div">
                                             ${msgItem.text}
                                            <button  type="button" class=" bg-transparent msg-dots" id="msg-dots" data-bs-toggle="dropdown" onclick=msgSettings() aria-expanded="false"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                            class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
@@ -162,9 +162,9 @@ const displayMessages = (_clickId, _myid) => {
                                        </svg>   
                                        </button>
                                         <ul class="dropdown-menu bg-light">
-                                            <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Delete For Me</a> <i class="bi bi-trash me-2 bin"></i> </li>
-                                            <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Delete For Everyone</a><i class="bi bi-trash me-2 bin"></i></li>
-                                            <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Edit Message</a><i class="bi bi-pencil-square me-2 edit"></i></li>
+                                            <li class="d-flex align-items-baseline" id ="del-for-me"  onclick=delForMe()><a class="dropdown-item" href="#">Delete For Me</a> <i class="bi bi-trash me-2 bin"></i> </li>
+                                            <li class="d-flex align-items-baseline" id ="del-for-all"><a class="dropdown-item" href="#">Delete For Everyone</a><i class="bi bi-trash me-2 bin"></i></li>
+                                            <li class="d-flex align-items-baseline" id ="edit-msg"><a class="dropdown-item" href="#">Edit Message</a><i class="bi bi-pencil-square me-2 edit"></i></li>
                                         </ul>
                                        
                                         </div>
@@ -176,16 +176,16 @@ const displayMessages = (_clickId, _myid) => {
     }
 }
 
-function show_hide() {  
-    var click = document.getElementById("list-items");  
-    if(click.style.display ==="none") {  
-       click.style.display ="block";  
-    } else {  
-       click.style.display ="none";  
-    }   
- }  
+function show_hide() {
+    var click = document.getElementById("list-items");
+    if (click.style.display === "none") {
+        click.style.display = "block";
+    } else {
+        click.style.display = "none";
+    }
+}
 
-const msgSettings = (text)=>{
+const msgSettings = (text) => {
     console.log('msgSettingsg',);
 };
 
@@ -228,7 +228,7 @@ function saveCurrClickId(index) {
         alert("No Chat history yet");
         return;
     }
-    displayMessages(currClickId,myOwnId);
+    displayMessages(currClickId, myOwnId);
     console.log("chathistry", chat_history);
 
 
@@ -308,20 +308,86 @@ sendBtn.addEventListener("click", () => {
     let msgTyped = document.querySelector(".input-send-msg input").value;
     console.log("MSG TYPED" + msgTyped);
     console.log("history found:", historyFound);
-   
+
     saveMsg(_currClickId, _myOwnId, msgTyped);
     displayMessages(_currClickId, _myOwnId);
 
 
 });
 
-const logOut = ()=>{
-    let _clickId = currClickId;
-    let _myid = myOwnId;
+const logOut = () => {
     let _authUser = JSON.parse(localStorage.getItem("authUser"));
-    _authUser={};
+    _authUser = {};
     localStorage.setItem("authUser", JSON.stringify(_authUser));
-    window.location.href ="./login.html";
+    window.location.href = "./login.html";
+};
+
+const delForMe = () => {
+    debugger
+    let msgTextDiv = document.querySelectorAll(".msg-text-div");
+    msgTextDiv.forEach((item, index) => {
+        item.addEventListener("click", () => {
+            let msgText = item.firstChild.textContent.trim();
+            console.log(item.firstChild.textContent.trim());
+
+            console.log(msgText);
+            let _myid = myOwnId;
+            let _clickid = currClickId;
+            let sid = _myid;
+            let _userDetails = JSON.parse(localStorage.getItem("userDetails"));
+            let updatedDetails = _userDetails[_myid].chatHistory.forEach((item, index) => {
+                let updatedMessages;
+                if (item.id == _clickid) {
+                    item.messages.forEach((msgItem, msgIndex) => {
+                        let trimMsg = msgItem.text.trim();
+                        console.log(msgItem.sid == _myid);
+                        console.log(trimMsg == msgText);
+                        if (msgItem.sid == _myid && trimMsg == msgText) {
+                            console.log(item.messages);
+                            updatedMessages = item.messages.splice(msgIndex, 1);
+
+                        }
+                    })
+                    if (updatedMessages) {
+                        // item.messages=updatedMessages;
+                        console.log(updatedMessages);
+                    }
+                }
+            });
+            console.log(_userDetails);
+            localStorage.setItem('userDetails', JSON.stringify(_userDetails));
+        });
+    });
+    // console.log(msgTextDiv.textContent);
+    // let msgText = msgTextDiv.firstChild.textContent;
+    // msgText = msgText.trim();
+    // console.log(msgText);
+    // let _myid = myOwnId;
+    // let _clickid = currClickId;
+    // let sid = _myid;
+    // let _userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    // let updatedDetails =_userDetails[_myid].chatHistory.forEach((item,index)=>{
+    // let updatedMessages; 
+    //     if(item.id == _clickid){
+    //             item.messages.forEach((msgItem,msgIndex)=>{
+    //             let trimMsg = msgItem.text.trim();
+    //             console.log(msgItem.sid == _myid);
+    //             console.log( trimMsg == msgText);
+    //             if(msgItem.sid == _myid && trimMsg == msgText){
+    //                 console.log(item.messages);
+    //                 updatedMessages = item.messages.splice(msgIndex, 1);
+
+    //             }
+    //         })
+    //         if(updatedMessages){
+    //             // item.messages=updatedMessages;
+    //             console.log(updatedMessages);
+    //         }
+    //     }
+    // });
+    // console.log(_userDetails);
+
+
 };
 
 
