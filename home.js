@@ -358,36 +358,6 @@ const delForMe = () => {
             localStorage.setItem('userDetails', JSON.stringify(_userDetails));
         });
     });
-    // console.log(msgTextDiv.textContent);
-    // let msgText = msgTextDiv.firstChild.textContent;
-    // msgText = msgText.trim();
-    // console.log(msgText);
-    // let _myid = myOwnId;
-    // let _clickid = currClickId;
-    // let sid = _myid;
-    // let _userDetails = JSON.parse(localStorage.getItem("userDetails"));
-    // let updatedDetails =_userDetails[_myid].chatHistory.forEach((item,index)=>{
-    // let updatedMessages; 
-    //     if(item.id == _clickid){
-    //             item.messages.forEach((msgItem,msgIndex)=>{
-    //             let trimMsg = msgItem.text.trim();
-    //             console.log(msgItem.sid == _myid);
-    //             console.log( trimMsg == msgText);
-    //             if(msgItem.sid == _myid && trimMsg == msgText){
-    //                 console.log(item.messages);
-    //                 updatedMessages = item.messages.splice(msgIndex, 1);
-
-    //             }
-    //         })
-    //         if(updatedMessages){
-    //             // item.messages=updatedMessages;
-    //             console.log(updatedMessages);
-    //         }
-    //     }
-    // });
-    // console.log(_userDetails);
-
-
 };
 
 
