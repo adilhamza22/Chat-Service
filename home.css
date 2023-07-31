@@ -2,11 +2,13 @@ body{
     background-image: url("./images/wa-bg.jpg");
     background-repeat: repeat-y;
     background-size: cover;
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     /* background-position: calc(10%); */
     position: relative;
 }
 .main-container{
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
     width: 90%;
     height: 90vh;
     position: absolute;
@@ -15,8 +17,41 @@ body{
     /* border-radius: 5px; */
     border-radius: 20px;
     box-shadow: 3px 3px 3px 3px gray;
-    background-image:linear-gradient(rgb(201, 211, 238), rgb(252, 252, 253))  
+    background-image:linear-gradient(rgb(201, 211, 238), rgb(252, 252, 253));
 }
+@media only screen and (max-width: 425px) {
+        .main-container{
+            width: 80%;
+            left:10%;
+            top: 40px;
+            font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+
+        }
+        .left-main-container{
+            /* width: 50%; */
+            /* height: 30%; */
+            overflow: scroll;
+            width: 100%;
+            font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+        
+        }
+        .right-main-container{
+            /* width: 50%; */
+            display: none;
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+        }
+        .input-send-msg{
+            display: none;
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+        }
+
+
+}
+
 .left-main-container{
     border-right: 1px solid dimgray;
     background-color: whitesmoke;
@@ -26,6 +61,7 @@ body{
 .right-main-container{
     position: relative;
     overflow: scroll;
+    height: inherit;
     /* display: flex; */
     /* justify-content: space-between; */
     /* align-self: flex-start  ; */
@@ -37,6 +73,8 @@ body{
     justify-content: end!important;
     width: 100%;
     align-self: center;
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
     
 }
 .profile-name svg{
@@ -120,6 +158,8 @@ body{
     padding-left: 0!important;
 }
 #chat-name ,.chat-name{
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
     height: 50px;
     font-size: small ;   
     /* display: flex;
@@ -128,7 +168,6 @@ body{
     display: flex;
     align-items: center!important;
     justify-content: space-between!important;   
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: medium;
 
 }
@@ -141,18 +180,25 @@ body{
 }
 .sender-msg-col{
     --bs-gutter-x: 0;
+    width: 50%;
     padding-left: 5px;
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 .own-msg-col{
     --bs-gutter-x: 0;
+    width: 50%;
     position: absolute;
     right: 0;
     padding-right: 5px;
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 .own-msg-col .card ,.sender-msg-col .card{
     border-radius: 15px;
     box-shadow: 0 0 1.5px 1.5px gray;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: "Dosis",'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
     font-size: medium;
 }
 .own-msg-col .card{

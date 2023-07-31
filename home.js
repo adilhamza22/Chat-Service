@@ -13,6 +13,16 @@ const authenticateUser = () => {
     return ownId;
 }
 
+
+const showHide = (id) => {
+    let x = document.getElementById(id);
+    if (x.style.display == "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
 // const getUserId = (fName, lName, timeStamp, uDetails) => {
 //     var userDetails = JSON.parse(localStorage.getItem("userDetails"));
 //     console.log("User: " + userDetails);
@@ -25,6 +35,7 @@ var userDetails = [];
 var myOwnId;
 var currClickId;
 let authUser = JSON.parse(localStorage.getItem("authUser"));
+var clickItem;
 function getChats(event) {
     // event.preventDefault();
     myOwnId = authenticateUser();
@@ -72,15 +83,22 @@ function getChats(event) {
         }
 
         var chatList = document.querySelectorAll(".chat-name");
+        
         chatList.forEach((chatList, index) => {
             // var _avatar = chatList.querySelectorAll(".chat-avatar > .chat-person");
 
             chatList.addEventListener("click", () => {
 
                 var name = chatList.innerText.split("\n");
+                clickItem = chatList.innerText;
+                console.log(clickItem, "click");
 
                 console.log("NAME:" + name[0]);
                 var lastSeen = name[1] || "";
+
+                clickItem = {id:currClickId, name:name[0], lastSeen:lastSeen};
+                localStorage.setItem("clickItem", JSON.stringify(clickItem));
+                console.log(clickItem, "click");
                 console.log("Last Seen:" + lastSeen + " " + typeof lastSeen);
 
                 var currName = name[0].split(" ");
@@ -88,20 +106,18 @@ function getChats(event) {
                 var currLname = currName[1];
                 // var clickedUser = { fName: currFname, lName: currLname, lastSeen: lastSeen };
                 // console.log(clickedUser);
+                if(screen.width >425){
+                    document.getElementById("chat-current-name").innerHTML = clickItem.name;
+                    document.getElementById("profile-last-seen").innerHTML = "Last Seen at:" + clickItem.lastSeen;
 
-                document.getElementById("chat-current-name").innerHTML = name[0];
-
-                // if(lastSeen!="") lastSeen = "Last Seen at: " + lastSeen;    
-
-                document.getElementById("profile-last-seen").innerHTML = "Last Seen at:" + lastSeen;
-
-
+                }
 
             })
         })
 
     }
 }
+
 
 const displayMessages = (_clickId, _myid) => {
     let recipientCol = document.getElementById("sender-msg-col");
@@ -117,6 +133,44 @@ const displayMessages = (_clickId, _myid) => {
             return;
         }
         chatUser.messages.forEach((msgItem, msgIndex) => {
+            if (msgItem.sid == _myid) {
+                //render own chats
+
+                let chatContent = "";
+                let div = document.createElement('div');
+                div.setAttribute('id', "chat-screen");
+                let nowTime = new Date();
+                let _timeStamp;
+                if(msgItem.timestamp){
+                _timeStamp =  msgItem.timestamp;
+                }
+                
+                chatContent += `
+                                    <div class="card">
+                                        <div class="card-body d-flex justify-content-between dropstart msg-text-div" id ="msg-text-div">
+                                            ${msgItem.text}
+                                           <button  type="button" class=" bg-transparent msg-dots" id="msg-dots" data-bs-toggle="dropdown" onclick=msgSettings() aria-expanded="false"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                           class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                           <path
+                                               d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                       </svg>   
+                                       </button>
+
+                                        <ul class="dropdown-menu bg-light">
+                                            <li class="d-flex align-items-baseline" id ="del-for-me"  onclick=delForMe()><a class="dropdown-item" href="#">Delete For Me</a> <i class="bi bi-trash me-2 bin"></i> </li>
+                                            <li class="d-flex align-items-baseline" id ="del-for-all" onclick=delForEveryone()><a class="dropdown-item" href="#">Delete For Everyone</a><i class="bi bi-trash me-2 bin"></i></li>
+                                            <li class="d-flex align-items-baseline" id ="edit-msg"><a class="dropdown-item" onclick=editMsg()>Edit Message</a><i class="bi bi-pencil-square me-2 edit"></i></li>
+                                        </ul>
+                                       
+                                        </div>
+                                        <div class="ms-3 mb-3"><sub>${_timeStamp || "13:31" }</sub></div>
+
+                                    </div>  `;
+                div.innerHTML = chatContent;
+                myCol.appendChild( div);
+                // chatScreen.appendChild(myCol);
+
+            }
             if (msgItem.sid == _clickId) {
                 
                 //render recpient chats
@@ -141,57 +195,41 @@ const displayMessages = (_clickId, _myid) => {
 
                                            <ul class="dropdown-menu bg-light">
                                            <li class="d-flex align-items-baseline"><a class="dropdown-item" onclick=delSenderMsgForMe()>Delete For Me</a><i class="bi bi-trash me-2 bin"></i></li>
-                                         
+
                                        </ul>
                                         </div>
-                                    </div>`;
+                                        <div class="ms-3 mb-3"><sub>${_timeStamp || "13:31" }</sub></div>
+
+                                    </div>
+                                    
+                                    `;
                 div.innerHTML = chatContent;
-                recipientCol.insertAdjacentElement('beforeend', div);
-
+                recipientCol.appendChild(div);
+                // chatScreen.appendChild(recipientCol);
             }
-            if (msgItem.sid == _myid) {
-                //render own chats
-
-                let chatContent = "";
-                let div = document.createElement('div');
-                div.setAttribute('id', "chat-screen");
-                let nowTime = new Date();
-                let _timeStamp;
-                if(msgItem.timestamp){
-                _timeStamp =  msgItem.timestamp;
-                }
-                
-                chatContent += `<div class="card">
-                                        <div class="card-body d-flex justify-content-between dropstart msg-text-div" id ="msg-text-div">
-                                            ${msgItem.text}
-                                           <button  type="button" class=" bg-transparent msg-dots" id="msg-dots" data-bs-toggle="dropdown" onclick=msgSettings() aria-expanded="false"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                           class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                                           <path
-                                               d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                                       </svg>   
-                                       </button>
-
-                                        <ul class="dropdown-menu bg-light">
-                                            <li class="d-flex align-items-baseline" id ="del-for-me"  onclick=delForMe()><a class="dropdown-item" href="#">Delete For Me</a> <i class="bi bi-trash me-2 bin"></i> </li>
-                                            <li class="d-flex align-items-baseline" id ="del-for-all" onclick=delForEveryone()><a class="dropdown-item" href="#">Delete For Everyone</a><i class="bi bi-trash me-2 bin"></i></li>
-                                            <li class="d-flex align-items-baseline" id ="edit-msg"><a class="dropdown-item" onclick=editMsg()>Edit Message</a><i class="bi bi-pencil-square me-2 edit"></i></li>
-                                        </ul>
-                                       
-                                        </div>
-                                    </div>  `;
-                div.innerHTML = chatContent;
-                myCol.insertAdjacentElement('beforeend', div);
-            }
+            
         });
     }
 }
 
-function show_hide() {
-    var click = document.getElementById("list-items");
-    if (click.style.display === "none") {
-        click.style.display = "block";
+// function show_hide() {
+//     var click = document.getElementById("list-items");
+//     if (click.style.display === "none") {
+//         click.style.display = "block";
+//     } else {
+//         click.style.display = "none";
+//     }
+// }
+
+
+const checkScreenWidth=(width)=> {
+    if (screen.width<=425) {
+      console.log('im on mobile!')
+      width = "mobile";
+      
     } else {
-        click.style.display = "none";
+      console.log('on a tablet, laptop, or desktop!')
+      width = "not mobile";
     }
 }
 
@@ -207,13 +245,48 @@ const clearChatScreen = () => {
     ownMsg.innerHTML = "";
 };
 
-
-
-
 var historyFound;
 
+const showUsers = () => {
+    
+    let rightMainContainer = document.querySelector(".right-main-container");
+    let leftMainContainer = document.querySelector(".left-main-container");
+    let senderMsgCol = document.querySelector(".sender-msg-col");
+    console.log(senderMsgCol.innerHTML+" "+"senderMsgCol");
+    let ownMsgCol = document.querySelector(".chats-box .own-msg-col");
+    let btnBack = document.querySelector(".btn-back");
+    let inputSendMsg = document.querySelector(".input-send-msg");
+    let profileBarRight = document.querySelector(".profile-bar-right");
+
+    // console.log(leftMainContainer);
+    // console.log("right:",rightMainContainer);
+    if(rightMainContainer && leftMainContainer){
+        let _userDetails = JSON.parse(localStorage.getItem("userDetails", userDetails));
+        document.getElementById("chat-current-name").innerHTML = _userDetails[currClickId].fName+" "+_userDetails[currClickId].lName;
+        document.getElementById("profile-last-seen").innerHTML = "Last Seen at:" + _userDetails[currClickId].timestamp;
+        leftMainContainer.style.display ="none";
+        rightMainContainer.style.display="block";
+        rightMainContainer.style.width="100%";
+        rightMainContainer.style.margin="0";
+        senderMsgCol.style.width="70%";
+        ownMsgCol.style.width="70% ";
+        inputSendMsg.style.display="block";
+        inputSendMsg.style.width="90%";
+        inputSendMsg.style.left="5%";
+        inputSendMsg.style.bottom="5px";
+        profileBarRight.style.height="70px";
+
+        btnBack.addEventListener("click", ()=>{
+            rightMainContainer.style.display="none";
+            leftMainContainer.style.display="block";
+        });
+
+    }
+
+};
 
 function saveCurrClickId(index) {
+    
     let encryptionAlert = document.getElementById("encryption-box");
     let encryptionAlertContent;
     encryptionAlertContent = "";
@@ -225,7 +298,7 @@ function saveCurrClickId(index) {
     currClickId = index;
     console.log(userDetails[currClickId].fName, userDetails[currClickId].id, "myIndex");
     console.log("_CurrClickId", currClickId);
-
+    
     //clear chat screen 
     clearChatScreen();
 
@@ -238,7 +311,13 @@ function saveCurrClickId(index) {
         alert("No Chat history yet");
         return;
     }
+  
+
     displayMessages(currClickId, myOwnId);
+    if(screen.width<=425){
+        showUsers();
+
+    }
     console.log("chathistry", chat_history);
 
 
@@ -248,21 +327,22 @@ function saveCurrClickId(index) {
 console.log("historyFound", historyFound);
 
 const saveMsg = (sid, myid, msg) => {
+    debugger
     let newUserCheck = 0;
     let date = new Date();
-    let timestamp = date.getHours() + ':' + date.getMinutes();
+    let _timestamp = date.getHours()+":"+date.getMinutes();
 
     debugger
     let senderHistoryCreated = false;
     if (!authUser.chatHistory || !userDetails[sid].chatHistory || !userDetails[myid].chatHistory) {
         if (!authUser.chatHistory) {
-            authUser.chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg, timestamp:timestamp }] }];
+            authUser.chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg, timestamp:_timestamp }] }];
             authUser.chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
             localStorage.setItem('authUser', JSON.stringify(authUser));
             newUserCheck++;
         }
         if (!userDetails[sid].chatHistory) {
-            userDetails[sid].chatHistory = [{ id: myid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] }];
+            userDetails[sid].chatHistory = [{ id: myid, messages: [{ sid: myid, text: msg,timestamp:_timestamp }] }];
             userDetails[sid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
             localStorage.setItem('userDetails', JSON.stringify(userDetails));
             newUserCheck++;
@@ -270,7 +350,7 @@ const saveMsg = (sid, myid, msg) => {
 
         }
         if (!userDetails[myid].chatHistory) {
-            userDetails[myid].chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] }];
+            userDetails[myid].chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg,timestamp:_timestamp }] }];
             userDetails[myid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
             localStorage.setItem('userDetails', JSON.stringify(userDetails));
             newUserCheck++;
@@ -282,11 +362,11 @@ const saveMsg = (sid, myid, msg) => {
     if (authUser.chatHistory) {
         let recipient = authUser.chatHistory.find((convo) => convo.id == sid);
         if (recipient) {
-            recipient.messages.push({ sid: myid, text: msg });
+            recipient.messages.push({ sid: myid, text: msg, timestamp:_timestamp });
         }
         if (!recipient) {
             //if chat history with another user then create a  new conversation in chathistory of auth user;
-            authUser.chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] });
+            authUser.chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg,timestamp:_timestamp }] });
 
         }
         authUser.chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
@@ -294,21 +374,24 @@ const saveMsg = (sid, myid, msg) => {
     }
     if (userDetails[sid].chatHistory) {
         let recipient = userDetails[sid].chatHistory.find((convo) => {
-            if (convo.id == myid && senderHistoryCreated != true) {
-                convo.messages.push({ sid: myid, text: msg, timestamp:timestamp });
+            if (convo.id == myid ) {
+                convo.messages.push({ sid: myid, text: msg, timestamp:_timestamp });
             }
+                // userDetails[sid].chatHistory.push({ id: myid, messages: [{ sid: myid, text: msg,timestamp:_timestamp }] }) ;
+            // userDetails[myid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
+
         });
         userDetails[sid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
-        localStorage.setItem('userDetails', JSON.stringify(userDetails));
+        localStorage.setItem('userDetails', JSON.stringify(userDetails));       
     }
     if (userDetails[myid].chatHistory) {
         let recipient = userDetails[myid].chatHistory.find((convo) => convo.id == sid);
         if (recipient) {
-            recipient.messages.push({ sid: myid, text: msg });
+            recipient.messages.push({ sid: myid, text: msg, timestamp:_timestamp });
         }
         //if chat history with another user then create a  new conversation in chathistory of own user in userDetails
         if (!recipient) {
-            userDetails[myid].chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] });
+            userDetails[myid].chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg,timestamp:_timestamp }] });
         }
         userDetails[myid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
         localStorage.setItem('userDetails', JSON.stringify(userDetails));
@@ -402,24 +485,36 @@ const delForEveryone = ()=>{
         item.addEventListener("click", () => {
             let msgText = item.firstChild.textContent.trim();
             console.log(item.firstChild.textContent.trim());
-
             console.log(msgText);
             let _myid = myOwnId;
             let _clickid = currClickId;
             let sid = _myid;
+            let currTime = new Date();
+            let currHr = currTime.getHours();
             let _userDetails = JSON.parse(localStorage.getItem("userDetails"));
+
             let updatedDetails = _userDetails[_myid].chatHistory.forEach((item, index) => {
+                let deleted1=false, deleted2=false;
                 let updatedMessages;
                 if (item.id == _clickid) {
                     item.messages.forEach((msgItem, msgIndex) => {
+                        let msgTimeStamp = msgItem.timestamp ||"13:31";
+                        let msgTimeArr = msgTimeStamp.split(':');
+                        let msgTimeHr = msgTimeArr[0].trim();
+                        let hrDiff = currHr - msgTimeHr;
                         let trimMsg = msgItem.text.trim();
                         console.log(msgItem.sid == _myid);
                         console.log(trimMsg == msgText);
-                        if (msgItem.sid == _myid && trimMsg == msgText) {
+                        if (msgItem.sid == _myid && trimMsg == msgText && (hrDiff>=0 && hrDiff<=1) ) {
                             console.log(item.messages);
                             updatedMessages = item.messages.splice(msgIndex, 1);
+                            deleted1 =true;
 
                         }
+                        // else{
+                        //     alert("Cannot Delete Message");
+                            
+                        // }
                     })
                     if (updatedMessages) {
                         // item.messages=updatedMessages;
@@ -435,23 +530,27 @@ const delForEveryone = ()=>{
                 if(item.id == _myid){
                     item.messages.forEach((msgItem,msgIndex)=>{
                         let trimMsg = msgItem.text.trim();
-                        let currTime = new Date();
-                        currTime = currTime.getHours()+":"+currTime.getMinutes();
+                        let msgTimeStamp = msgItem.timestamp ||  "13:31";
+                        let msgTimeArr = msgTimeStamp.split(':');
+                        let msgTimeHr = msgTimeArr[0].trim();
+                        let hrDiff = currHr - msgTimeHr;
                         console.log(msgItem.sid == _myid);
                         console.log(trimMsg == msgText);
                         // add timestamp check in if condition 
-                        if(msgItem.sid == _myid && trimMsg == msgText) {
+                        if(msgItem.sid == _myid && trimMsg == msgText && (hrDiff>=0 && hrDiff<=1)) {
                             item.messages.splice(msgIndex, 1);
+                            deleted2 =true;
+
                         }
+                        
 
                     })
                 }
             });
-
             console.log(_userDetails);
-
-            // console.log(_userDetails);
+            if(deleted1 == false &&  deleted2 == false) {alert("Cannot delete message after one Hour");}
             localStorage.setItem('userDetails', JSON.stringify(_userDetails));
+            // console.log(_userDetails);
         });
     });
        
@@ -462,6 +561,7 @@ const editMsg = () => {
     let msgTextDiv = document.querySelectorAll(".msg-text-div");
     msgTextDiv.forEach((item,index)=>{
         item.addEventListener("click",()=>{
+            alert("Enter your message in the input field and press edit button");
             let editBtn = document.querySelector(".edit-btn");
             editBtn.addEventListener("click",()=>{
                 let msgEdit = document.querySelector(".input-send-msg input").value;
@@ -469,7 +569,7 @@ const editMsg = () => {
                 let _myid = myOwnId;
                 let _clickId = currClickId;
                 let _userDetails = JSON.parse(localStorage.getItem("userDetails"));
-                let msgText = item.firstChild.textContent.trim(); 
+                let msgText = item.firstChild.textContent.trim();
                 console.log(msgText);
                 //edit in my history
                 _userDetails[_myid].chatHistory.forEach((userItem,userIndex)=>{
@@ -523,8 +623,9 @@ const clearChat = () => {
         }
     });
     console.log(_userDetails);
-
 }
+
+
 
 
 
