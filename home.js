@@ -257,11 +257,13 @@ const saveMsg = (sid, myid, msg) => {
     if (!authUser.chatHistory || !userDetails[sid].chatHistory || !userDetails[myid].chatHistory) {
         if (!authUser.chatHistory) {
             authUser.chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg, timestamp:timestamp }] }];
+            authUser.chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
             localStorage.setItem('authUser', JSON.stringify(authUser));
             newUserCheck++;
         }
         if (!userDetails[sid].chatHistory) {
             userDetails[sid].chatHistory = [{ id: myid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] }];
+            userDetails[sid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
             localStorage.setItem('userDetails', JSON.stringify(userDetails));
             newUserCheck++;
             senderHistoryCreated = true;
@@ -269,6 +271,7 @@ const saveMsg = (sid, myid, msg) => {
         }
         if (!userDetails[myid].chatHistory) {
             userDetails[myid].chatHistory = [{ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] }];
+            userDetails[myid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
             localStorage.setItem('userDetails', JSON.stringify(userDetails));
             newUserCheck++;
         }
@@ -286,6 +289,7 @@ const saveMsg = (sid, myid, msg) => {
             authUser.chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] });
 
         }
+        authUser.chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
         localStorage.setItem('authUser', JSON.stringify(authUser));
     }
     if (userDetails[sid].chatHistory) {
@@ -294,6 +298,7 @@ const saveMsg = (sid, myid, msg) => {
                 convo.messages.push({ sid: myid, text: msg, timestamp:timestamp });
             }
         });
+        userDetails[sid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
         localStorage.setItem('userDetails', JSON.stringify(userDetails));
     }
     if (userDetails[myid].chatHistory) {
@@ -305,10 +310,11 @@ const saveMsg = (sid, myid, msg) => {
         if (!recipient) {
             userDetails[myid].chatHistory.push({ id: sid, messages: [{ sid: myid, text: msg,timestamp:timestamp }] });
         }
+        userDetails[myid].chatHistory.sort((a,b)=>a.id > b.id? 1:-1);
         localStorage.setItem('userDetails', JSON.stringify(userDetails));
     }
 
-
+    
 };
 
 
@@ -434,6 +440,22 @@ const delForEveryone = ()=>{
     });
        
 };
+
+const clearChat = () => {
+    debugger
+    let _clickId = currClickId;
+    let _myid = myOwnId;
+    let _userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        _userDetails[_myid].chatHistory.forEach((item,index) => {
+        if(item.id == _clickId) {
+            _userDetails[_myid].chatHistory.splice(index, 1);
+            localStorage.setItem('userDetails',JSON.stringify(_userDetails));
+        }
+    });
+    console.log(_userDetails);
+
+}
+
 
 
 
