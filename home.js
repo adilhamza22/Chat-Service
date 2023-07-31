@@ -140,7 +140,7 @@ const displayMessages = (_clickId, _myid) => {
                                            </button>
 
                                            <ul class="dropdown-menu bg-light">
-                                           <li class="d-flex align-items-baseline"><a class="dropdown-item" href="#">Delete For Me</a><i class="bi bi-trash me-2 bin"></i></li>
+                                           <li class="d-flex align-items-baseline"><a class="dropdown-item" onclick=delSenderMsgForMe()>Delete For Me</a><i class="bi bi-trash me-2 bin"></i></li>
                                          
                                        </ul>
                                         </div>
@@ -174,7 +174,7 @@ const displayMessages = (_clickId, _myid) => {
                                         <ul class="dropdown-menu bg-light">
                                             <li class="d-flex align-items-baseline" id ="del-for-me"  onclick=delForMe()><a class="dropdown-item" href="#">Delete For Me</a> <i class="bi bi-trash me-2 bin"></i> </li>
                                             <li class="d-flex align-items-baseline" id ="del-for-all" onclick=delForEveryone()><a class="dropdown-item" href="#">Delete For Everyone</a><i class="bi bi-trash me-2 bin"></i></li>
-                                            <li class="d-flex align-items-baseline" id ="edit-msg"><a class="dropdown-item" href="#">Edit Message</a><i class="bi bi-pencil-square me-2 edit"></i></li>
+                                            <li class="d-flex align-items-baseline" id ="edit-msg"><a class="dropdown-item" onclick=editMsg()>Edit Message</a><i class="bi bi-pencil-square me-2 edit"></i></li>
                                         </ul>
                                        
                                         </div>
@@ -344,6 +344,7 @@ const logOut = () => {
 const delForMe = () => {
     debugger
     let msgTextDiv = document.querySelectorAll(".msg-text-div");
+    let senderTextDiv = document.querySelectorAll(".sender-text-div");
     msgTextDiv.forEach((item, index) => {
         item.addEventListener("click", () => {
             let msgText = item.firstChild.textContent.trim();
@@ -378,6 +379,21 @@ const delForMe = () => {
         });
     });
 };
+
+const delSenderMsgForMe =() =>{
+    debugger
+    let senderTextDiv = document.querySelectorAll(".sender-text-div");
+    senderTextDiv.forEach((item,index)=>{
+        item.addEventListener("click",()=>{
+            let msgText = item.firstChild.text.trim();
+            console.log(item.firstChild.textContent.trim());
+            console.log(msgText);
+        });
+    });
+    
+}
+
+
 
 const delForEveryone = ()=>{
     debugger
@@ -441,6 +457,60 @@ const delForEveryone = ()=>{
        
 };
 
+const editMsg = () => {
+    debugger
+    let msgTextDiv = document.querySelectorAll(".msg-text-div");
+    msgTextDiv.forEach((item,index)=>{
+        item.addEventListener("click",()=>{
+            let editBtn = document.querySelector(".edit-btn");
+            editBtn.addEventListener("click",()=>{
+                let msgEdit = document.querySelector(".input-send-msg input").value;
+                console.log("msgEdit:", msgEdit);
+                let _myid = myOwnId;
+                let _clickId = currClickId;
+                let _userDetails = JSON.parse(localStorage.getItem("userDetails"));
+                let msgText = item.firstChild.textContent.trim(); 
+                console.log(msgText);
+                //edit in my history
+                _userDetails[_myid].chatHistory.forEach((userItem,userIndex)=>{
+                    if(userItem.id == _clickId){
+                        userItem.messages.forEach((msgItem,msgIndex)=>{
+                        let msgItemText = msgItem.text.trim(); 
+                            if(msgItem.sid == _myid && msgItemText == msgText){
+                                let currTime = new Date();
+                                currTime = currTime.getHours()+":"+currTime.getMinutes();
+                                msgItem.text = msgEdit.trim();
+                                msgItem.timestamp = currTime;
+                                console.log(msgItem.text);
+                                console.log(_userDetails);
+                                localStorage.setItem("userDetails", JSON.stringify(_userDetails));
+
+                            }
+                        });
+                    }
+                });
+                //edit in click users history as well
+                _userDetails[_clickId].chatHistory.forEach((userItem,userIndex)=>{
+                    if(userItem.id == _myid){
+                        userItem.messages.forEach((msgItem,msgIndex)=>{
+                        let msgItemText = msgItem.text.trim(); 
+                            if(msgItem.sid == _myid && msgItemText == msgText){
+                                let currTime = new Date();
+                                currTime = currTime.getHours()+":"+currTime.getMinutes();
+                                msgItem.text = msgEdit.trim();
+                                msgItem.timestamp = currTime;
+                                console.log(msgItem.text);
+                                console.log(_userDetails);
+                                localStorage.setItem("userDetails", JSON.stringify(_userDetails));
+                            }
+                        });
+                    }
+                });
+            });
+            
+        });
+    });
+};
 const clearChat = () => {
     debugger
     let _clickId = currClickId;
