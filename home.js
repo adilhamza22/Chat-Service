@@ -492,9 +492,9 @@ const delForEveryone = ()=>{
             let currTime = new Date();
             let currHr = currTime.getHours();
             let _userDetails = JSON.parse(localStorage.getItem("userDetails"));
-
+            let deleted1=false, deleted2=false;
             let updatedDetails = _userDetails[_myid].chatHistory.forEach((item, index) => {
-                let deleted1=false, deleted2=false;
+                
                 let updatedMessages;
                 if (item.id == _clickid) {
                     item.messages.forEach((msgItem, msgIndex) => {
