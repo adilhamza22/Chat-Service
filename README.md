@@ -1,3 +1,3 @@
 # Chat-Service
 For Live Preview
-www.whatchatapp.netlify.app
+whatchatapp.netlify.app
